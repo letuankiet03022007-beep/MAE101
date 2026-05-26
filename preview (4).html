@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề Thi Trắc Nghiệm Đạo Hàm</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f2f6fb;
+    margin:0;
+    padding:20px;
+}
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+h1{
+    text-align:center;
+    color:#004c8c;
+}
+.section{
+    background:#004c8c;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    margin-top:25px;
+}
+.question{
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+.option{
+    border:2px solid #ccc;
+    border-radius:8px;
+    padding:10px;
+    margin-top:10px;
+    cursor:pointer;
+}
+.option:hover{
+    background:#eef5ff;
+}
+.correct{
+    background:#c7ffd1 !important;
+    border-color:green !important;
+}
+.wrong{
+    background:#ffd0d0 !important;
+    border-color:red !important;
+}
+.explanation{
+    margin-top:15px;
+    background:#f8f8f8;
+    padding:12px;
+    border-left:5px solid #004c8c;
+    display:none;
+}
+.score{
+    position:sticky;
+    top:10px;
+    background:#004c8c;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    font-size:22px;
+}
+.tip{
+    color:#b0005a;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>ĐỀ THI TRẮC NGHIỆM TƯƠNG TÁC – ĐẠO HÀM</h1>
+
+<div class="score">
+Điểm hiện tại: <span id="score">0</span>/20
+</div>
+
+<div id="quiz"></div>
+
+</div>
+
+<script>
+
+const questions = [
+{
+question:"1. Đạo hàm biểu diễn điều gì?",
+options:["Diện tích","Tốc độ thay đổi tức thời","Chu vi","Trung bình cộng"],
+correct:1,
+explanation:"Đạo hàm biểu diễn tốc độ thay đổi tức thời của hàm số.",
+tip:"Nhớ từ khóa: tốc độ thay đổi."
+},
+{
+question:"2. Đạo hàm của hằng số C bằng:",
+options:["1","C","0","Không xác định"],
+correct:2,
+explanation:"Hằng số không thay đổi nên đạo hàm bằng 0.",
+tip:"Không đổi → đạo hàm = 0."
+},
+{
+question:"3. Ý nghĩa hình học của đạo hàm là:",
+options:["Diện tích","Hệ số góc tiếp tuyến","Thể tích","Chu vi"],
+correct:1,
+explanation:"Đạo hàm chính là hệ số góc của tiếp tuyến.",
+tip:"Tiếp tuyến ↔ đạo hàm."
+},
+{
+question:"4. Công thức định nghĩa đạo hàm là:",
+options:[
+"\\(\\int f(x)dx\\)",
+"\\(\\lim_{\\Delta x \\to 0} \\frac{f(x+\\Delta x)-f(x)}{\\Delta x}\\)",
+"\\(x+y\\)",
+"\\(a^2+b^2\\)"
+],
+correct:1,
+explanation:"Đây là công thức định nghĩa đạo hàm bằng giới hạn.",
+tip:"Có giới hạn tiến về 0."
+},
+{
+question:"5. Nếu s(t) là quãng đường thì s'(t) là:",
+options:["Gia tốc","Khối lượng","Vận tốc","Lực"],
+correct:2,
+explanation:"Đạo hàm của quãng đường theo thời gian là vận tốc.",
+tip:"Quãng đường → vận tốc."
+},
+
+{
+question:"6. Tính \\( (x^3)' \\)",
+options:["\\(3x^2\\)","\\(x^2\\)","\\(3x\\)","\\(x^3\\)"],
+correct:0,
+explanation:"Áp dụng quy tắc lũy thừa.",
+tip:"Hạ số mũ xuống trước."
+},
+{
+question:"7. Tính \\( (5x)' \\)",
+options:["5","x","0","5x"],
+correct:0,
+explanation:"Đạo hàm của x bằng 1 nên kết quả là 5.",
+tip:"(ax)' = a."
+},
+{
+question:"8. Tính \\( (7)' \\)",
+options:["7","1","0","Không xác định"],
+correct:2,
+explanation:"Đạo hàm của hằng số luôn bằng 0.",
+tip:"Hằng số → 0."
+},
+{
+question:"9. Tính \\( (x^5)' \\)",
+options:["\\(5x^4\\)","\\(x^4\\)","\\(4x^5\\)","\\(5x\\)"],
+correct:0,
+explanation:"Dùng quy tắc lũy thừa.",
+tip:"Giảm số mũ đi 1."
+},
+{
+question:"10. Tính \\( (2x^2)' \\)",
+options:["\\(4x\\)","\\(2x\\)","x","2"],
+correct:0,
+explanation:"2 nhân với đạo hàm của x².",
+tip:"Giữ nguyên hệ số."
+},
+
+{
+question:"11. Tính đạo hàm của \\(x^2+3x+1\\)",
+options:["\\(2x+3\\)","\\(x+3\\)","\\(2x+1\\)","\\(3x^2\\)"],
+correct:0,
+explanation:"Đạo hàm từng hạng tử.",
+tip:"Tách từng phần ra đạo hàm."
+},
+{
+question:"12. Tính \\( (\\sin x)' \\)",
+options:["\\(\\cos x\\)","\\(-\\sin x\\)","1","0"],
+correct:0,
+explanation:"Đạo hàm sin là cos.",
+tip:"Sin → Cos."
+},
+{
+question:"13. Tính \\( (\\cos x)' \\)",
+options:["\\(\\sin x\\)","\\(-\\cos x\\)","\\(-\\sin x\\)","1"],
+correct:2,
+explanation:"Đạo hàm cos là âm sin.",
+tip:"Cos luôn nhớ dấu âm."
+},
+{
+question:"14. Tính \\( (e^x)' \\)",
+options:["\\(e^x\\)","x","1","0"],
+correct:0,
+explanation:"Hàm mũ e^x bất biến khi đạo hàm.",
+tip:"e^x đạo hàm giữ nguyên."
+},
+{
+question:"15. Tính \\( (\\ln x)' \\)",
+options:["x","\\(1/x\\)","0","\\(\\ln x\\)"],
+correct:1,
+explanation:"Đạo hàm ln x là 1/x.",
+tip:"ln ↔ 1/x."
+},
+
+{
+question:"16. Tính đạo hàm của \\(x^2\\sin x\\)",
+options:[
+"\\(2x\\sin x + x^2\\cos x\\)",
+"\\(x^2\\cos x\\)",
+"\\(2x\\cos x\\)",
+"\\(x\\sin x\\)"
+],
+correct:0,
+explanation:"Dùng quy tắc tích.",
+tip:"Hai hàm nhân nhau → quy tắc tích."
+},
+{
+question:"17. Tính đạo hàm của \\(\\frac{x^2+1}{x}\\)",
+options:[
+"\\(1-\\frac1{x^2}\\)",
+"\\(2x\\)",
+"x",
+"\\(x^2\\)"
+],
+correct:0,
+explanation:"Rút gọn thành x + 1/x rồi đạo hàm.",
+tip:"Rút gọn trước khi tính."
+},
+{
+question:"18. Tính đạo hàm của \\(\\sqrt{x}\\)",
+options:[
+"\\(\\frac{1}{2\\sqrt{x}}\\)",
+"\\(2\\sqrt{x}\\)",
+"\\(\\sqrt{x}\\)",
+"\\(1/x\\)"
+],
+correct:0,
+explanation:"Viết thành x^(1/2).",
+tip:"Căn → mũ 1/2."
+},
+{
+question:"19. Tính đạo hàm của \\((3x+1)^5\\)",
+options:[
+"\\(15(3x+1)^4\\)",
+"\\(5(3x+1)^4\\)",
+"\\(3(3x+1)^5\\)",
+"\\((3x+1)^4\\)"
+],
+correct:0,
+explanation:"Dùng quy tắc hàm hợp.",
+tip:"Ngoài nhân trong."
+},
+{
+question:"20. Nếu \\(s(t)=t^3-3t\\), vận tốc tại t=2 là:",
+options:["9","12","6","3"],
+correct:0,
+explanation:"s'(t)=3t²−3. Thay t=2 được 9.",
+tip:"Lấy đạo hàm trước rồi thay số."
+}
+];
+
+let score = 0;
+const quiz = document.getElementById("quiz");
+
+questions.forEach((q,index)=>{
+
+    if(index===0){
+        quiz.innerHTML += '<div class="section">PHẦN I – LÝ THUYẾT</div>';
+    }
+    if(index===5){
+        quiz.innerHTML += '<div class="section">PHẦN II – BÀI TẬP DỄ</div>';
+    }
+    if(index===10){
+        quiz.innerHTML += '<div class="section">PHẦN III – BÀI TẬP TRUNG BÌNH</div>';
+    }
+    if(index===15){
+        quiz.innerHTML += '<div class="section">PHẦN IV – BÀI TẬP KHÓ</div>';
+    }
+
+    let div = document.createElement("div");
+    div.className = "question";
+
+    let html = `<h3>${q.question}</h3>`;
+
+    q.options.forEach((op,i)=>{
+        html += `<div class="option" onclick="check(this,${index},${i})">${String.fromCharCode(65+i)}. ${op}</div>`;
+    });
+
+    html += `
+    <div class="explanation" id="exp-${index}">
+    <b>Đáp án đúng:</b> ${String.fromCharCode(65+q.correct)}<br><br>
+    <b>Giải thích:</b> ${q.explanation}<br><br>
+    <span class="tip">Mẹo làm nhanh:</span> ${q.tip}
+    </div>
+    `;
+
+    div.innerHTML = html;
+    quiz.appendChild(div);
+
+});
+
+function check(el,qIndex,selected){
+
+    const q = questions[qIndex];
+    const options = el.parentElement.querySelectorAll(".option");
+
+    options.forEach(op=>{
+        op.style.pointerEvents="none";
+    });
+
+    if(selected===q.correct){
+        el.classList.add("correct");
+        score++;
+        document.getElementById("score").innerText = score;
+    }else{
+        el.classList.add("wrong");
+        options[q.correct].classList.add("correct");
+    }
+
+    document.getElementById("exp-"+qIndex).style.display="block";
+
+    if(window.MathJax){
+        MathJax.typeset();
+    }
+}
+
+</script>
+
+</body>
+</html>
